@@ -1,0 +1,262 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Réclamations{% endblock %}
+{% block content %} 
+    
+    <div class="app-wrapper">
+        {% if user_type == "Employe"   and employee.etat == False        %}
+      
+        <div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% elif user_type == "Client"  and client.etat == False  %}
+<div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% else %}
+        
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">                
+                <h1 class="app-page-title">Réclamtions</h1>
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-8">
+                        <h3 class="section-title">Liste des réclamations</h3><br>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead >
+                                    <tr  >
+                                        <th   style="background-color:rgba(117,193,129,0.8);" width="15% " >Sujet</th>
+                                        <th  style="background-color:rgba(117,193,129,0.8);"  width="30% ">Description</th>
+                                        <th  style="background-color:rgba(117,193,129,0.8);" width="15% " >Tuteur & role </th>
+                                        <th  style="background-color:rgba(117,193,129,0.8);" width="20% " >date</th>
+                                        <th   style="background-color:rgba(117,193,129,0.8);" width="30% ">Réponse</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                 
+                                    {% for reclamation in reclamations %}
+                                    <tr>
+                                    <td>{{ reclamation.sujet }}</td>
+                                    <td>{{ reclamation.description }}</td>
+                                    <td>{{ reclamation.employe.nom }} {{ reclamation.employe.prenom }} | {{ reclamation.employe.role }}</td>
+                                    <td>{{reclamation.date}}</td>
+                                    <td>
+                                   
+                                          {% if reclamation.reponse == "Pas encore de réponse" %}
+                                              {% if employee.role == "ResponsableRH" %}
+                                              <button class="openPopupBtn" data-popup-id="{{ reclamation.id }}">Répondre</button>
+
+                                              <!-- The popup (hidden by default) -->
+                                              <div id="popup{{ reclamation.id }}" class="popup">
+                                                  <!-- Your form goes here -->
+                                                  <form id="popupForm{{ reclamation.id }}" action="{% url 'repondrereclamation' reclamation.id %}" method="post" class="settings-form">
+
+
+                                                      {% csrf_token %}
+                                                      <div class="input-group">
+                                                          <span class="input-group-text">Réponse</span>
+                                                          <textarea maxlength="40"  name="reponse" class="form-control" aria-label="With textarea"></textarea>
+                                                      </div>
+                                                      <br>
+                                                      <!-- Add form fields and submit button -->
+                                                      <button type="submit" class="btn btn-primary">
+                                                          Répondre
+                                                      </button>
+                                                  </form>
+                                                  <button class="btn-close closePopupBtn" data-popup-id="{{ reclamation.id }}"></button>
+                                              </div>
+                                                      <style>
+                                                        /* Style the popup container */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style the popup content */
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the close button */
+#closePopupBtn {
+  margin-top: 10px;
+}
+
+/* Center the form fields */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Style for the overlay */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1; /* Ensure the overlay appears above other elements */
+}
+
+/* Style to blur everything under the overlay */
+body.blur {
+  filter: blur(5px);
+  pointer-events: none; /* Disable pointer events on blurred elements */
+}
+
+/* Style for the popup container */
+.popup {
+  /* ... Your existing styles ... */
+  z-index: 2; /* Ensure the popup appears above the overlay */
+}
+
+</style>
+<!-- Add this script at the end of your HTML body or in a separate script file -->
+<script>
+    // Function to open the popup
+    function openPopup(reclamationId) {
+        const popup = document.getElementById('popup' + reclamationId);
+        const overlay = document.querySelector('.overlay');
+        popup.style.display = 'flex';
+        overlay.style.display = 'block';
+        document.body.classList.add('blur'); // Add the blur class to body
+    }
+
+    // Function to close the popup
+    function closePopup(reclamationId) {
+        const popup = document.getElementById('popup' + reclamationId);
+        const overlay = document.querySelector('.overlay');
+        popup.style.display = 'none';
+        overlay.style.display = 'none';
+        document.body.classList.remove('blur'); // Remove the blur class from body
+    }
+
+    // Attach event listener to the document for the buttons and popups
+    document.addEventListener('click', function(event) {
+        const target = event.target;
+
+        // If the clicked element has the class "openPopupBtn"
+        if (target.classList.contains('openPopupBtn')) {
+            const popupId = target.dataset.popupId;
+            openPopup(popupId);
+        }
+
+        // If the clicked element has the class "closePopupBtn"
+        if (target.classList.contains('closePopupBtn')) {
+            const popupId = target.dataset.popupId;
+            closePopup(popupId);
+        }
+    });
+
+    // Submit the form when the form is submitted
+    const popupForms = document.querySelectorAll('.settings-form');
+    popupForms.forEach(function(popupForm) {
+        popupForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Add your form submission logic here
+            // For example, you can use AJAX to submit the form data to your Django backend
+            // After successful submission, close the popup
+            const popupId = popupForm.dataset.popupId;
+            closePopup(popupId);
+        });
+    });
+</script>
+
+
+  
+<!-- Add this script at the end of your HTML body or in a separate script file -->
+
+  
+                                      
+                                      
+
+                                      {% endif %}
+                                      {% if employee.role != "ResponsableRH" %}
+                                      
+                                      {{ reclamation.reponse }}
+                                      {% endif %}
+                                      {% else %}
+                                      {{ reclamation.reponse }}
+                                   
+                                 
+                                    {% endif %}
+                                    </td>
+                                    
+                                    </tr>
+                                    {% endfor %}
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                    {%  if user.client         %}       
+                    <div  style="transform:translateY(8px)" class="col-12 col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                              <h5 class="card-title">Avis Clients</h5>
+                              
+                              <p class="card-text">Espace réservé pour les employés</p>
+                            
+                            </div>
+                          </div>
+                        </div>
+                    {% elif employee.role != "ResponsableRH" %}
+                    <div class="col-12 col-md-4">
+                        <div class="app-card app-card-settings shadow-sm p-4">
+                            
+                            <div class="card " style="text-align:center;padding:10px" >
+								
+                                <form action="/fairereclamation/" method="post" class="settings-form">
+                                    {% csrf_token %}
+                                 
+                                
+                                 
+                                    <div class="mb-3">
+                                        <label for="setting-input-5" class="form-label">Sujet</label>
+                                        <input required name="sujet" type="sujet" class="form-control" id="setting-input-5" value=" "required>
+                                    </div>
+									<div class="mb-3">
+                                        <label for="setting-input-4" class="form-label">Description</label>
+                                        <input required name="description"  type="text" class="form-control" id="setting-input-4" value="">
+                                    </div><br>
+							
+                                    <button type="submit" style="background-color:rgba(117,193,129,0.8);" class="btn " class="btn btn-primary">
+                                        
+                                        Faire Réclamation
+                                    </button>
+                                </form><br>
+                            
+
+
+                            </div><!--//app-card-body-->
+                            
+                        </div><!--//app-card-->
+                    </div>
+                    {% else %}
+                    <div  style="transform:translateY(8px)" class="col-12 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">Avis RH</h5>
+                          
+                          <p class="card-text">En tant q'un responsable Rh , vous n'etes pas autorisés qu'a consulter les reclamations et les répondre</p>
+                        
+                        </div>
+                      </div>
+                    </div>
+                 
+                    {% endif %}
+
+                    {% endif %}
+
+                </div><!--//row-->
+{% endblock %}
+

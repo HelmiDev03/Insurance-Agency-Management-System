@@ -1,0 +1,126 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Assurances_Habitation{% endblock %}
+{% block content %} 
+{% load static %}
+    
+    <div class="app-wrapper">
+        
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">                
+                <h1 class="app-page-title">Assurance Habitation</h1>
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-8">
+                        <h3 class="section-title">Liste des assurances habitations disponibles</h3><br>
+                        <table class="table table-bordered table-hover">
+                            <thead >
+                                <tr >
+                                    <th  class="bg-success">Client</th>
+                                    <th  class="bg-success">type </th>
+                                    <th  class="bg-success">superficie </th>
+                                    <th  class="bg-success">état</th>
+                                
+                               
+                                </tr>
+                            </thead>  
+                            <tbody>
+                             
+                                {% for home in habitations %}
+                                <tr>
+                                <td>{{ home.client.nom }} {{ home.client.prenom }}</td>
+                                <td>{{ home.type}}</td>
+                                <td>{{home.superficie}} metres carées</td>
+                            
+                                <td>
+                                    {% if home.reponse    ==      "Pas encore pris en charge"        %}
+                                                        {%  if user.employe.role == "GestionnaireServiceClient"   %}
+                                                        <form action="{% url 'rephabitation' home.id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <button name="action" value="accept" class="btn btn-primary">Prendre en charge</button>
+                                                            <button name="action" value="reject" class="btn btn-danger">Rejeter</button>
+                                                        </form>
+                                                        
+
+                                                
+                                                                 {%else%}
+                                                                    <p class="text-danger">Pas encore pris en charge</p>
+                                                                    {%endif%}
+ 
+                                                          
+                                    
+                                    {%else%}
+                                  
+                                    {%if home.reponse == "ok" %}
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#319216" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                     {%else%}
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"  fill="none" stroke="#ff0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                     {%endif%}
+                                    {%endif%}
+                                </td>
+                          
+                                
+                                </tr>
+                                {% endfor %}
+                               
+                            </tbody>
+                        </table>
+                     
+                            
+                        </div>
+    
+                          
+                       
+                  
+                    <div  style="transform:translateY(8px)" class="col-12 col-md-4">
+                 
+
+
+
+
+
+
+
+
+                      <div class="homed">
+                        <div class="homed-header">
+                          <h5 class="homed-title">Assurance Habitation</h5>
+                          <img src="{% static 'img/dar.jpg' %}" height="240px" width="100%" alt="automobile" >
+                        </div>
+                        {% if user.client  %}
+
+                        <div class="homed-body">
+                          <form method="post" method="habitation">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                              <label for="marque" class="form-label">Superficie</label>
+                              <input required type="text" name="superficie" id="marque" class="form-control" required>
+                            </div>
+            
+                              <label for="usage" class="form-label">Type</label>
+                              <select required name="type" id="usage" class="form-control" required>
+                                <option selected disabled value="personnel">choisir</option>
+                                <option value="Maison">Maison</option>
+                                <option value="Appartement">Appartement</option>
+                                </select>
+                            </div>
+                            
+                           <center> <button type="submit" class="btn btn-primary">Envoyer</button></center>
+                          </form>
+                        </div>
+                        {% endif %}
+               
+              
+                
+      
+    
+          
+          
+              
+              
+          </div>
+      </div>
+                    </div>
+                 
+              
+                </div><!--//row-->
+{% endblock %}

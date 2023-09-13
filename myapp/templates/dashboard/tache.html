@@ -1,0 +1,180 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Taches-{{stagiaire.employe.nom}} {{stagiaire.employe.prenom}}{% endblock %}
+{% block content %} 
+{% load static %}
+    
+    <div class="app-wrapper">
+        
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">                
+                <h1 class="app-page-title">Stagiaire {{stagiaire.employe.nom}} {{stagiaire.employe.prenom}}</h1>
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-8">
+                       {%if not taches %}
+                       <h5 class="card-title">{{stagiaire.encadrant}} n'a pas ajouté aucune tache pour le moment</h5>
+                        {% else %}
+                        <div class="col-md-4">
+
+
+                            <div class="">
+                  
+                    </div>
+                    </div>
+               
+
+
+                        {% for tache in taches %}
+                        {% if tache %}
+                        <div style="border-radius:16px;" class="card">
+                            <div  class="card-body">
+                                <h5 style="  font-size: 22px;
+                                color: #464e56;
+                                font-weight: 600;
+                                text-align: left;
+                                        " 
+                            class="card-title">Titre: {{ tache.titre }}
+                             </h5>
+                                <p style="   font-size: 18px;
+                                font-weight: 500;
+                                color: #868e94;
+                                text-align: left;
+                           "
+                                class="card-text"
+                                >Description: {{ tache.description }}</p>
+                              	  <p class="card-text">ajouté à {{ tache.date }}</p>
+                                {% if not tache.travail and tache.stagiaire.employe.user == user %}
+                                <div class="mb-3">
+                                    <form action="{% url 'fairetache' tache.id %}" method="post" class="settings-form" enctype="multipart/form-data"> 
+
+                                        {% csrf_token %}
+                                        <label for="setting-input-4" class="form-label">travail </label>
+                                        <input placeholder="ajouter votre travail" required name="file"  type="file" class="form-control" id="setting-input-4" value="">
+                                        <br>
+                                        <button type="submit" class="btn btn-danger">
+                                           
+                                            ajouter le travail
+                                        </button>
+                                    </form>
+                                    
+                                </div>
+                                {%elif not tache.travail %}
+                                <p class="card-text">Travail  pas fait encore </p>
+                                {% else %}
+                                <p class="card-text">Travail fait: <a href="{{ tache.travail.url }}" download>{{ tache.travail.name }}</a></p>
+
+                                {% endif %}
+                                {% if  tache.travail and user.username.strip == stagiaire.encadrant.strip and tache.etat != "fait" %}
+                                <div class="mb-3">
+                                    <form action="{% url 'notertache' tache.id %}" method="post" class="settings-form"> 
+
+                                        {% csrf_token %}
+                                        <label for="setting-input-4" class="form-label">noter</label>
+                                        <input placeholder="la note doit etre entre 0 et 10" required name="note"  type="text" class="form-control" id="setting-input-4" value="">
+                                        <br>
+                                        {%if messages %}
+                                        {% for message in messages %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ message }}
+                                        </div>
+                                        {% endfor %}
+                                        {% endif %}
+                                        <button type="submit" class="btn btn-danger">
+                                           
+                                            noter le travail
+                                        </button>
+                                    </form>
+                                    
+                                </div>
+                                {%else%}
+                                <p class="card-text">Note: {{ tache.note }}/10</p>
+                                {% endif %}
+                         
+                            </div>
+                        </div>
+                        
+                        
+                        
+                          
+                        {% endif %}<br>
+                    {% endfor %}
+                    {% endif %}
+                   
+                    <style>
+                        /* Add your custom styles for the code block here */
+                        .code-block {
+                            background-color: #ebebeb;
+                            padding: 10px;
+                            border-radius: 5px;
+                            overflow: auto;
+                        }
+                    
+                        /* Styles for the copy and dark mode buttons */
+                       
+                     
+                    </style>
+                    
+              
+                    
+                    
+                        
+                        
+                    </div>
+
+                    
+                    {% if user.username.strip == stagiaire.encadrant.strip %}
+                    <div class="col-12 col-md-4">
+                        <div class="app-card app-card-settings shadow-sm p-4">
+                            
+                            <div class="card " style="text-align:center;padding:10px" >
+								
+                                <form action="/tache/{{ stagiaire.id }}" method="post"  class="settings-form">
+                                    {% csrf_token %}
+                                 
+                                
+                                 
+                                    <div class="mb-3">
+                                        <label for="setting-input-5" class="form-label">titre</label>
+                                        <input required name="titre" type="sujet" class="form-control" id="setting-input-5" value=" "required>
+                                    </div>
+								
+                                    <div class="mb-3">
+                                        <label for="setting-input-4" class="form-label">description </label>
+                                        <textarea required name="description" class="form-control" id="setting-input-4" rows="3"></textarea>
+
+                                    </div>
+                                    
+                                    <br>
+                                 
+							
+                                    <button type="submit" class="btn btn-primary">
+                                      
+                                        ajouter la tache
+                                    </button>
+                                 
+                                </form><br>
+                            
+
+
+                            </div><!--//app-card-body-->
+                            
+                        </div><!--//app-card-->
+                    </div>
+                    {% else %}
+
+                    <div  style="transform:translateY(8px)" class="col-12 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">Avis Employés</h5>
+                         
+                          
+                          <p class="card-text">Seulement L'encadrent {{stagiaire.encadrant}} peut ajouter des taches ici </p>
+                        
+                        </div>
+                      </div>
+                    </div>
+                 
+                    {% endif %}
+            
+                </div><!--//row-->
+{% endblock %}

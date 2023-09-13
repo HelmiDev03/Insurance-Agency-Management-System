@@ -1,0 +1,65 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Souscriptions{% endblock %}
+{% block content %} 
+{% load static %}
+    
+    <div class="app-wrapper">
+      {% if user_type == "Employe"   and employee.etat == False        %}
+      
+      <div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% elif user_type == "Client"  and client.etat == False  %}
+<div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% else %}
+      
+        
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">                
+                <h1 class="app-page-title">Souscriptions</h1>
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-8">
+                        <h3 class="section-title">Souscriptions disponibles chez l MAE</h3><br>
+                        <div class="container">
+                            <div class="row">
+                              <!-- Card for Souscription à une assurance automobile -->
+                              <div class="col-md-4 mb-4">
+                                <div class="card">
+                                  <img src="{% static 'img/car.jpeg' %}" class="card-img-top" alt="Automobile">
+                                  <div class="card-body">
+                                    <h5 class="card-title">Souscription à une assurance automobile</h5>
+                                    <p class="card-text">Obtenez tout simplement un tarif d'assurance automobile en ligne .</p>
+                                    <a  style="background-color:rgba(117,193,129,0.8);"  href="{%   url 'automobile'      %}" class="btn ">Consulter</a>
+                                  </div>
+                                </div>
+                              </div>
+                        
+                              <!-- Card for Souscription à une assurance habitation -->
+                              <div class="col-md-4 mb-4">
+                                <div class="card">
+                                  <img height="180px" src="{% static 'img/home.jpeg' %}" class="card-img-top" alt="santé">
+                                  <div class="card-body">
+                                    <h5 class="card-title">Souscription à une assurance habitation</h5>
+                                    <p class="card-text">Obtenez tout simplement un tarif d'assurance  en ligne .</p>
+                                    <a  style="background-color:rgba(117,193,129,0.8);" href="{%   url 'habitation'      %}" class="btn ">Consulter</a>
+                                  </div>
+                                </div>
+                              </div>
+                      
+                        
+                              <!-- Add more cards for other subscriptions (health, travel, life) here -->
+                              <!-- ... -->
+                        
+                            </div>
+                            </div>
+                    </div>
+               
+                     
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+                           
+                        {% endif %}
+                            {% endblock %}

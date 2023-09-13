@@ -1,0 +1,409 @@
+
+{% extends 'dashboard/base.html' %}
+{% block title %}Statistiques{% endblock %}
+
+{% block content %} 
+
+    
+    <div class="app-wrapper">
+		{% if user_type == "Employe"   and employe.etat == False        %}
+      
+        <div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% elif user_type == "Client"  and client.etat == False  %}
+<div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% else %}
+	    
+	    <div class="app-content pt-3 p-md-3 p-lg-4">
+		    <div class="container-xl">
+			    
+			    <h1 class="app-page-title">Statistiques</h1>
+			 
+			
+				    
+			    <div  class="row g-4 mb-4">
+				    <div class="col-8 col-lg-6">
+					    <div class="app-card app-card-stat shadow-sm h-100">
+						    <div class="app-card-body p-3 p-lg-4">
+							    <h4 class="stats-type mb-1">Les Employés</h4>
+							    <div class="stats-figure">{{nb_employes}}</div>
+								<div >
+									<canvas id="myChart"></canvas>
+								</div>
+							
+								<script>
+									// Get the chart data passed from the Django view
+									var chartData = {{ chart_data_emp|safe }};
+									var labels = chartData.labels;
+									var data = chartData.data;
+							
+									// Custom colors for each role
+									var colors = [
+                                 'rgba(255, 99, 132, 0.7)',   // Red
+                                 'rgba(54, 162, 235, 0.7)',   // Blue
+                                'rgba(255, 206, 86, 0.7)',   // Yellow
+                                 'rgba(75, 192, 192, 0.7)',   // Teal
+                                'rgba(153, 102, 255, 0.7)'   // Purple
+                                           ];
+									// Create the chart
+									var ctx = document.getElementById('myChart').getContext('2d');
+									var myChart = new Chart(ctx, {
+										type: 'doughnut', // Set the chart type to doughnut
+										data: {
+											labels: labels,
+											datasets: [{
+												data: data,
+												backgroundColor: [
+													'rgba(255, 99, 132, 0.2)',
+													'rgba(54, 162, 235, 0.2)',
+													'rgba(255, 206, 86, 0.2)',
+													'rgba(75, 192, 192, 0.2)',
+													'rgba(153, 102, 255, 0.2)',
+													// Add more colors as needed
+												],
+												borderColor: [
+													'rgba(255, 99, 132, 1)',
+													'rgba(54, 162, 235, 1)',
+													'rgba(255, 206, 86, 1)',
+													'rgba(75, 192, 192, 1)',
+													'rgba(153, 102, 255, 1)',
+													// Add more colors as needed
+												],
+												borderWidth: 1
+											}]
+										},
+										options: {
+											responsive: true,
+											maintainAspectRatio: false, // Set to false if you want to set custom height and width
+										}
+									});
+									// Parse the JSON data
+									
+								</script>
+			
+						    </div><!--//app-card-body-->
+						    <a class="app-card-link-mask" href="#"></a>
+					    </div><!--//app-card-->
+				    </div><!--//col-->
+				    
+				    <div class="col-8 col-lg-3">
+					    <div class="app-card app-card-stat shadow-sm h-100">
+						    <div class="app-card-body p-3 p-lg-4">
+							    <h4 class="stats-type mb-1">Les Clients</h4>
+							    <div class="stats-figure">{{nb_clients}}</div>
+								<div >
+									<canvas id="xx"></canvas>
+								</div>
+								<script>
+									// Get the chart data passed from the Django view
+									var chartDataAssurance = {{ chart_data_assurance|safe }};
+							
+									// Parse the JSON data
+									var labels = chartDataAssurance.labels;
+									var data = chartDataAssurance.data;
+							
+									// Create the chart
+									var ctx = document.getElementById('xx').getContext('2d');
+									var assuranceChart = new Chart(ctx, {
+										type: 'bar', // Use 'bar' type for horizontal bar chart effect
+										data: {
+											labels: labels,
+											datasets: [{
+												label: '',
+												data: data,
+												backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)','rgba(54, 162,235, 0.2)'],
+												borderColor: ['rgba(55, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+												borderWidth: 0
+											}]
+										},
+										options: {
+											indexAxis: 'y', // Set 'y' to make it a horizontal bar chart
+											scales: {
+												x: {
+													beginAtZero: true
+												}
+											},
+											legend: {
+												display: false // Hide the legend
+											}
+										}
+									});
+								</script>
+							
+							
+						    </div><!--//app-card-body-->
+						
+					    </div><!--//app-card-->
+				    </div><!--//col-->
+				    <div class="col-8 col-lg-3">
+					    <div class="app-card app-card-stat shadow-sm h-100">
+						    <div class="app-card-body p-3 p-lg-4">
+							    <h4 class="stats-type mb-1">Technologies utilisées par les développeurs MAE</h4>
+								<div >
+									<canvas id="myChart0"></canvas>
+								</div>
+								<script>
+									// Get the chart data passed from the Django view
+									var chartData = {{ chart_data_dev|safe }};
+								
+									// Parse the JSON data
+									var labels = chartData.labels;
+									var data = chartData.data;
+								
+									// Create the chart
+									var ctx = document.getElementById('myChart0').getContext('2d');
+									var myChart = new Chart(ctx, {
+										type: 'doughnut', // Set the chart type to doughnut
+										data: {
+											labels: labels,
+											datasets: [{
+												data: data,
+												backgroundColor: [
+													'rgba(255, 99, 132, 0.2)',
+													'rgba(54, 162, 235, 0.2)',
+													'rgba(255, 206, 86, 0.2)',
+													'rgba(75, 192, 192, 0.2)',
+													'rgba(153, 102, 255, 0.2)',
+													// Add more colors as needed
+												],
+												borderColor: [
+													'rgba(255, 99, 132, 1)',
+													'rgba(54, 162, 235, 1)',
+													'rgba(255, 206, 86, 1)',
+													'rgba(75, 192, 192, 1)',
+													'rgba(153, 102, 255, 1)',
+													// Add more colors as needed
+												],
+												borderWidth: 1
+											}]
+										},
+										options: {
+											responsive: true,
+											maintainAspectRatio: false, // Set to false if you want to set custom height and width
+										}
+									});
+								</script>
+								
+							  
+						
+					    </div><!--//app-card-->
+				    </div><!--//col-->
+				  
+				   
+			    </div><!--//row-->
+             
+
+			    <div class="row g-4 mb-4">
+			        <div style="width: 50%;">
+						<canvas id="myChart1"></canvas>
+						<script>
+							// Get the chart data passed from the Django view
+							var chartData = {{ chart_data_reclamation|safe }};
+					
+							// Parse the JSON data
+							var labels = chartData.labels;
+							var data = chartData.data;
+					
+							// Create the chart
+							var ctx = document.getElementById('myChart1').getContext('2d');
+							var myChart = new Chart(ctx, {
+								type: 'bar',
+								data: {
+									labels: labels,
+									datasets: [{
+										label: 'Nombre des réclamation par role',
+										data: data,
+										backgroundColor: "rgba(117,193,129,0.8)", 
+										hoverBackgroundColor: "rgba(117,193,129,1)",
+										borderColor: 'rgba(75, 192, 192, 1)',
+										borderWidth: 0
+									}]
+								},
+								options: {
+									scales: {
+										y: {
+											beginAtZero: true
+										}
+									}
+								}
+							});
+						</script>
+					</div>
+					<div style="width: 50%;">
+						<canvas id="myChart2"></canvas>
+						<script>
+							// Get the chart data passed from the Django view
+							var chartData = {{ chart_data_conge|safe }};
+					
+							// Parse the JSON data
+							var labels = chartData.labels;
+							var data = chartData.data;
+					
+							// Create the chart
+							var ctx = document.getElementById('myChart2').getContext('2d');
+							var myChart = new Chart(ctx, {
+								type: 'bar',
+								data: {
+									labels: labels,
+									datasets: [{
+										label: 'Nombre des congés par role',
+										data: data,
+										backgroundColor: "rgba(117,193,129,0.8)", 
+										hoverBackgroundColor: "rgba(117,193,129,1)",
+										borderColor: 'rgba(75, 192, 192, 1)',
+										borderWidth: 0
+									}]
+								},
+								options: {
+									scales: {
+										y: {
+											beginAtZero: true
+										}
+									}
+								}
+							});
+						</script>
+					</div>
+					<div class="rental-manager-progress-bar-container">
+						<div class="active">MAE</div>
+						<div class="active">MAE</div>
+						<div class="active">MAE</div>
+						<div class="active">MAE</div>
+						<div class="active">MAE</div>
+					
+					
+					  </div>
+					  <style>
+						.rental-manager-progress-bar-container {
+							width: 100%;
+							display: flex;
+						  
+							justify-content: space-between;
+							border-top: 10px solid #024a92;
+							padding-top: 15px;
+							margin-top: 55px;
+						  }
+						  
+						  
+						  .active{
+							background-color: #fff !important;
+						  }
+						  
+						  .rental-manager-progress-bar-container div {
+							background-color: #024a92;
+							font-weight: bold;
+							color: #7ea5cc;
+							border: 2px solid #024a92;
+							margin-top: -45px;
+							width: 45px;
+							height: 45px;
+							line-height: 45px;
+							text-align: center;
+							border-radius: 50%;
+							z-index: 99;
+						  }
+						</style>
+					<div style="width: 50%;">
+						<canvas id="myChart3"></canvas>
+						<script>
+							// Get the chart data passed from the Django view
+							var chartData = {{ chart_data_sousc|safe }};
+					
+							// Parse the JSON data
+							var labels = chartData.labels;
+							var data = chartData.data;
+					
+							// Create the chart
+							var ctx = document.getElementById('myChart3').getContext('2d');
+							var myChart = new Chart(ctx, {
+								type: 'bar',
+								data: {
+									labels: labels,
+									datasets: [{
+										label: 'Nombre des assurances automobiles par usage',
+										data: data,
+										backgroundColor: "rgba(117,193,129,0.8)", 
+										hoverBackgroundColor: "rgba(117,193,129,1)",
+										borderColor: 'rgba(75, 192, 192, 1)',
+										borderWidth: 0
+									}]
+								},
+								options: {
+									scales: {
+										y: {
+											beginAtZero: true
+										}
+									}
+								}
+							});
+						</script>
+					</div>
+
+					<div style="width: 50%;">
+						<canvas id="myChart4"></canvas>
+						<script>
+							// Get the chart data passed from the Django view
+							var chartData = {{ chart_data_sous_hab|safe }};
+					
+							// Parse the JSON data
+							var labels = chartData.labels;
+							var data = chartData.data;
+					
+							// Create the chart
+							var ctx = document.getElementById('myChart4').getContext('2d');
+							var myChart = new Chart(ctx, {
+								type: 'bar',
+								data: {
+									labels: labels,
+									datasets: [{
+										label: 'Nombre des assurances habitations par type',
+										data: data,
+										backgroundColor: "rgba(117,193,129,0.8)", 
+										hoverBackgroundColor: "rgba(117,193,129,1)",
+										borderColor: 'rgba(75, 192, 192, 1)',
+										borderWidth: 0
+									}]
+								},
+								options: {
+									scales: {
+										y: {
+											beginAtZero: true
+										}
+									}
+								}
+							});
+						</script>
+					</div>
+					
+
+
+
+
+					{% endif %}
+
+
+
+
+
+
+			    </div><!--//row-->
+			  
+								
+
+				{% endblock %}
+
+<style>
+	@media (max-width: 767px) {
+		#myChart1{
+			width: 100% !important;
+		}
+		#myChart2{
+			width: 100% !important;
+		}
+		#myChart3{
+			width: 100% !important;
+		}
+		#myChart4{
+			width: 100% !important;
+		}
+	
+	}

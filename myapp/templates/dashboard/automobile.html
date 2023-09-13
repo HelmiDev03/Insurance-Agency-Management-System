@@ -1,0 +1,132 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Assurances_Automobiles{% endblock %}
+{% block content %} 
+{% load static %}
+    
+    <div class="app-wrapper">
+        
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">                
+                <h1 class="app-page-title">Assurance Automobile</h1>
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-8">
+                        <h3 class="section-title">Liste des assurances automobiles disponibles</h3><br>
+                        <table class="table table-bordered table-hover">
+                            <thead >
+                                <tr >
+                                    <th  class="bg-success">Client</th>
+                                    <th  class="bg-success">Marque </th>
+                                    <th  class="bg-success">date 1er mise en circulation </th>
+                                    <th  class="bg-success">usage </th>
+                                    <th  class="bg-success">état</th>
+                                
+                               
+                                </tr>
+                            </thead>  
+                            <tbody>
+                             
+                                {% for car in automobile %}
+                                <tr>
+                                <td>{{ car.client.nom }} {{ car.client.prenom }}</td>
+                                <td>{{ car.marque}}</td>
+                                <td>{{ car.date_premiercirculation}}</td>
+                                <td>{{car.usage}}</td>
+                            
+                                <td>
+                                    {% if car.reponse    ==      "Pas encore pris en charge"        %}
+                                                        {%  if user.employe.role == "GestionnaireServiceClient"   %}
+                                                        <form action="{% url 'repautomobile' car.id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <button name="action" value="accept" class="btn btn-primary">Prendre en charge</button>
+                                                            <button name="action" value="reject" class="btn btn-danger">Rejeter</button>
+                                                        </form>
+                                                        
+
+                                                
+                                                                 {%else%}
+                                                                    <p class="text-danger">Pas encore pris en charge</p>
+                                                                    {%endif%}
+ 
+                                                          
+                                    
+                                    {%else%}
+                                  
+                                    {%if car.reponse == "ok" %}
+                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#319216" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                     {%else%}
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"  fill="none" stroke="#ff0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                     {%endif%}
+                                    {%endif%}
+                                </td>
+                          
+                                
+                                </tr>
+                                {% endfor %}
+                               
+                            </tbody>
+                        </table>
+                     
+                            
+                        </div>
+    
+                          
+                       
+                  
+                    <div  style="transform:translateY(8px)" class="col-12 col-md-4">
+                 
+
+
+
+
+
+
+
+
+                      <div class="card">
+                        <div class="card-header">
+                          <img src="{% static 'img/carx.jpg' %}" width="100%" height="250px" alt="automobile" >
+                        </div>
+                        {% if user.client  %}
+
+                        <div class="card-body">
+                          <form method="post" method="automobile">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                              <label for="marque" class="form-label">Marque</label>
+                              <input required type="text" name="marque" id="marque" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="date_premiercirculation" class="form-label">Date de première circulation</label>
+                              <input required type="date" name="date" id="date_premiercirculation" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="usage" class="form-label">Usage</label>
+                              <select required name="usage" id="usage" class="form-control" required>
+                                <option selected disabled value="personnel">choisir</option>
+                                <option value="Privé">Privéé</option>
+                                <option value="Utilitaire">Utilitaire</option>
+                                </select>
+                            </div>
+                            
+                           <center> <button type="submit" class="btn btn-primary">Envoyer</button></center>
+                          </form>
+                        </div>
+                        {% endif %}
+                   
+               
+              
+                
+      
+    
+          
+          
+              
+              
+          </div>
+      </div>
+                    </div>
+                 
+              
+                </div><!--//row-->
+{% endblock %}

@@ -1,0 +1,269 @@
+{% load static %}
+<head>
+  <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@200;300;400;500&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+</head>
+<div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6 col-md-7 intro-section">
+          
+          
+        </div>
+        <div class="col-sm-6 col-md-5 form-section">
+          <div class="login-wrapper">
+            <h3 class=" col-md-18 offset-md-3">Bienvenue cher </h3>
+            <h3 class=" col-md-3 offset-md-4">Stagiaire </h3>
+            <form action="{% url 'signupstagiaire' employeeid %}" method="post">
+
+              {% csrf_token %}
+              <div class="form-group">
+                
+                <input required type="text" name="specialite" id="text" class="form-control" placeholder="specialite">
+              </div>
+              <div class="form-group">
+                
+                <input required type="text" name="faculte" id="text" class="form-control" placeholder="faculté">
+              </div>
+              
+              <div class="form-group">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">encadrant</label>
+                  </div>
+                  <select name="encadrant" class="custom-select" id="inputGroupSelect01">
+                   
+                    {% if encadrants %}
+                    <option  disabled="true" selected>Choose...</option>
+                    {% for encadrant in encadrants %}
+                    <option value="{{encadrant.employe.user.username}} ">{{encadrant.id}}-{{encadrant.employe.nom}} {{encadrant.employe.prenom}}</option>
+                    {% endfor %}
+                    {%else%}
+                    <option value="0" disabled="true">pas d'encadrants pour le moment</option>
+                    {% endif %}
+                    
+                    
+                  </select>
+                </div>
+
+              </div>
+            
+
+              <div class="d-flex justify-content-between align-items-center mb-5">
+                <button type="submit" class="btn btn-success col-md-6 offset-md-3 rounded-bottom ">s'inscrire</button>
+                
+              </div>
+              {% if messages %}
+              {% for message in messages %}
+              <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                {{message}}
+                
+              </div>
+              {% endfor %}
+              {% endif %}
+            </form>    
+            <p class="login-wrapper-footer-text"><a href="{%  url 'resetpassword'      %}" class="text-reset">Mot de passe oublié ? </a></p>         
+            <p class="login-wrapper-footer-text">Vous avez déjà un compte ? <a href=href="{%  url 'login'      %}" class="text-reset">s'identifier</a></p>
+       
+      <div style="display: flex;"        class="images">
+				<div class="im1">
+					<img width="50px" src="{% static 'img/p2.png' %}" alt="">
+					
+				</div>
+				<div  class="im1">
+          <img width="50px" src="{% static 'img/p2.png' %}" alt="">
+				
+				</div>
+				<div class="im1">
+          <img width="50px" src="{% static 'img/p3.png' %}" alt="">
+				
+				</div>
+			
+			</div>
+          </div>
+        </div>
+      </div>
+    </div>
+	<style>
+		body {
+  background-color: #fff;
+  font-family: 'Karla', sans-serif; }
+  .im1{
+	width: 75px;
+	  margin: 0 20px;
+	  display:flex ;
+	  flex-direction:column;
+  }
+  
+h1 > a {
+    text-decoration:none;
+    color:#fff !important;
+}
+
+.intro-section {
+  background-image: url("{% static 'img/back.png' %}");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 75px 95px;
+  min-height: 100vh;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+          flex-direction: column;
+  color: #ffffff; }
+  @media (max-width: 991px) {
+    .intro-section {
+      padding-left: 50px;
+      padding-rigth: 50px; } }
+  @media (max-width: 767px) {
+    .intro-section {
+      padding: 28px; } }
+  @media (max-width: 575px) {
+    .intro-section {
+      min-height: auto; } }
+
+.brand-wrapper .logo {
+  height: 35px; }
+
+@media (max-width: 767px) {
+  .brand-wrapper {
+    margin-bottom: 35px; } }
+
+.intro-content-wrapper {
+  width: 410px;
+  max-width: 100%;
+  margin-top: auto;
+  margin-bottom: auto; }
+  .intro-content-wrapper .intro-title {
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 17px; }
+  .intro-content-wrapper .intro-text {
+    font-size: 19px;
+    line-height: 1.37; }
+  .intro-content-wrapper .btn-read-more {
+    background-color: #fff;
+    padding: 13px 30px;
+    border-radius: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000; }
+    .intro-content-wrapper .btn-read-more:hover {
+      background-color: transparent;
+      border: 1px solid #fff;
+      color: #fff; }
+
+@media (max-width: 767px) {
+  .intro-section-footer {
+    margin-top: 35px; } }
+
+.intro-section-footer .footer-nav a {
+  font-size: 20px;
+  font-weight: bold;
+  color: inherit; }
+  @media (max-width: 767px) {
+    .intro-section-footer .footer-nav a {
+      font-size: 14px; } }
+  .intro-section-footer .footer-nav a + a {
+    margin-left: 30px; }
+
+.form-section {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+          justify-content: center; }
+  @media (max-width: 767px) {
+    .form-section {
+      padding: 35px; } }
+
+.login-wrapper {
+  width: 300px;
+  max-width: 100%; }
+  @media (max-width: 575px) {
+    .login-wrapper {
+      width: 100%; } }
+  .login-wrapper .form-control {
+    border: 0;
+    border-bottom: 1px solid #e7e7e7;
+    border-radius: 0;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 15px 10px;
+    margin-bottom: 7px; }
+    .login-wrapper .form-control::-webkit-input-placeholder {
+      color: #b0adad; }
+    .login-wrapper .form-control::-moz-placeholder {
+      color: #b0adad; }
+    .login-wrapper .form-control:-ms-input-placeholder {
+      color: #b0adad; }
+    .login-wrapper .form-control::-ms-input-placeholder {
+      color: #b0adad; }
+    .login-wrapper .form-control::placeholder {
+      color: #b0adad; }
+
+.login-title {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 30px; }
+
+.login-btn {
+  padding: 13px 30px;
+  background-color: #000;
+  border-radius: 0;
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff; }
+  .login-btn:hover {
+    border: 1px solid #000;
+    background-color: transparent;
+    color: #000; }
+
+.forgot-password-link {
+  font-size: 14px;
+  color: #080808;
+  text-decoration: underline; }
+
+.social-login-title {
+  font-size: 15px;
+  color: #919aa3;
+  display: -webkit-box;
+  display: flex;
+  margin-bottom: 23px; }
+  .social-login-title::before, .social-login-title::after {
+    content: "";
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f4f4f4), to(#f4f4f4));
+    background-image: linear-gradient(#f4f4f4, #f4f4f4);
+    -webkit-box-flex: 1;
+            flex-grow: 1;
+    background-size: calc(100% - 20px) 1px;
+    background-repeat: no-repeat; }
+  .social-login-title::before {
+    background-position: center left; }
+  .social-login-title::after {
+    background-position: center right; }
+
+.social-login-links {
+  text-align: center;
+  margin-bottom: 32px; }
+
+.social-login-link img {
+  width: 40px;
+  height: 40px;
+  -o-object-fit: contain;
+     object-fit: contain; }
+
+.social-login-link + .socia-login-link {
+  margin-left: 16px; }
+
+.login-wrapper-footer-text {
+  font-size: 14px;
+  text-align: center; }
+	</style>

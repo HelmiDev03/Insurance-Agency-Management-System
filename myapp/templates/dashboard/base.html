@@ -1,0 +1,364 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Default Title{% endblock %}</title>
+		<!-- Add the Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="{% static 'assets/css/prism.css' %}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+
+        
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+        <meta name="author" content="Xiaoying Riley at 3rd Wave Media">    
+        <link rel="shortcut icon" href="favicon.ico"> 
+        
+        <!-- FontAwesome JS-->
+       <!-- FontAwesome JS -->
+    <script defer src="{% static 'assets/plugins/fontawesome/js/all.min.js' %}"></script>
+    
+    <!-- App CSS -->
+    <link id="theme-style" rel="stylesheet" href="{% static '/assets/css/portal.css' %}">
+    </head>
+
+    
+  <body class="app">
+    <header style="background-color:rgba(117,193,129,0.8);" class="app-header fixed-top">	   	            
+        <div  class="app-header-inner">  
+	        <div  class="container-fluid py-2">
+		        <div class="app-header-content"> 
+					
+		            <div class="row justify-content-between align-items-center">
+			        
+				    <div class="col-auto">
+					    <a style="color:white" id="sidepanel-toggler" class="sidepanel-toggler d-inline-block d-xl-none" href="#">
+						    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img"><title>Menu</title><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg>
+					    </a>
+				    </div><!--//col-->
+				
+
+		            
+		            <div  class="app-utilities col-auto">
+						
+					
+
+
+
+					
+
+ 		
+			           
+			            
+			            <div style="margin-top:-5px;display:flex;" >
+							
+							<div id="notification-bar">
+				
+								<!-- Notification icon -->
+									<div style="margin-left:340px" >
+								<a href="{% url 'notifications' %}">
+									<span class="notification-icon">
+										<i class='fa fa-bell' style='color: white'></i></span> 
+								
+								
+								<!-- Unread notification count badge -->
+								{% if number_unseen_notifications  %}
+								<span class="notification-badge" id="unread-count-badge">{{number_unseen_notifications}}</span>
+								{% endif %}
+								</div>
+								</a>
+						
+								   
+								   
+						   
+					   
+								   
+							   
+					   
+							   </div>
+						<!-- Notification Modal -->
+						
+						
+				
+                         <span      style="color:white ;margin-top:8px">       Bonjour {{ user.username }} ! </span>
+								
+                              
+						 <style>
+							/* Styling for the notification bar */
+							#notification-bar {
+								position: fixed;
+								top:5px;
+								right: 180px;
+								z-index: 1000;
+							}
+					
+							/* Styling for the notification icon */
+							.notification-icon {
+								font-size: 24px;
+								margin-right: -15px;
+								vertical-align: middle;
+							}
+							.notification-icon :hover {
+								cursor: pointer;
+							}
+					
+							/* Styling for the notification badge */
+							.notification-badge {
+								background-color: red;
+								color: white;
+								font-size: 12px;
+								padding: 2px 6px;
+								border-radius: 50%;
+							
+								
+								
+							}
+						</style>
+					
+						
+					
+				          
+				           
+			            </div><!--//app-user-dropdown--> 
+		            </div><!--//app-utilities-->
+		        </div><!--//row-->
+	            </div><!--//app-header-content-->
+	        </div><!--//container-fluid-->
+        </div><!--//app-header-inner-->
+        <div id="app-sidepanel" class="app-sidepanel"> 
+	        <div id="sidepanel-drop" class="sidepanel-drop"></div>
+	        <div class="sidepanel-inner d-flex flex-column">
+		        <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
+		        <div class="app-branding">
+		            <a class="app-logo" href="{%  url 'home'   %}"><img width="200px" class="" src="{% static 'assets/images/logo.png' %}" alt="logoemp"></a>
+	
+		        </div><!--//app-branding-->  
+				<div >
+					{% if user.employe and user.employe.is_image %}
+		            <img style="transform:translateX(70%);border-radius:50%" height="100px" width="100px" class="" src="{{ user.employe.image.url }}" alt="logocli">
+	                {% elif user.client and  user.client.is_image %}
+					<img style="transform:translateX(70%);;border-radius:50%" height="90px" width="100px" class="" src="{{ user.client.image.url }}" alt="Default Logo">
+					{%else%}
+					
+					<img style="transform:translateX(70%)" height="90px" width="100px" class="" src="{% static 'assets/images/default.png' %}" >
+                    {%endif%}
+
+		        </div><!--//app-branding-->
+		        
+			    <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
+				    <ul class="app-menu list-unstyled accordion" id="menu-accordion">
+					    <li class="nav-item">
+					        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+					        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{%   url 'home'    %}">
+						        <span class="nav-icon">
+						        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-house-door" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+		  <path fill-rule="evenodd" d="M7.646 1.146a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 .146.354v7a.5.5 0 0 1-.5.5H9.5a.5.5 0 0 1-.5-.5v-4H7v4a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .146-.354l6-6zM2.5 7.707V14H6v-4a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v4h3.5V7.707L8 2.207l-5.5 5.5z"/>
+		  <path fill-rule="evenodd" d="M13 2.5V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+		</svg>
+						         </span>
+		                         <span class="nav-link-text">Statistiques</span>
+					        </a><!--//nav-link-->
+					    </li><!--//nav-item-->
+					    <!--//profile -->
+					    <li class="nav-item">
+					        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+					        <a  class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{%   url 'profile'    %}">
+						        <span class="nav-icon">
+									<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd" d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm3-3a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM1 15c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2s-.9 2-2 2H3c-1.1 0-2-.9-2-2zM2 6a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm12 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+									  </svg>
+									  
+									  
+						         </span>
+		                         <span class="nav-link-text">Profile</span>
+					        </a><!--//nav-link-->
+					    </li><!--//nav-item-->
+						<li class="nav-item">
+					        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+					        <a  class="nav-link {% if request.resolver_match.url_name == 'reclamation' %}active{% endif %}" href="{%   url 'reclamation'    %}">
+						        <span class="nav-icon">
+									<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path d="M3 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H3zm0 1h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/>
+										<path d="M11.293 5.293a1 1 0 0 0-1.414 0l-6 6a1 1 0 0 0 1.414 1.414L5 10.414V13a1 1 0 0 0 2 0v-2.586l2.293 2.293a1 1 0 0 0 1.414-1.414l-6-6z"/>
+										<path fill-rule="evenodd" d="M12.146 3.354a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1 0 .708l-9 9a.5.5 0 0 1-.364.146H2.5a.5.5 0 0 1-.5-.5V12a.5.5 0 0 1 .146-.364l9-9z"/>
+									</svg>
+									  
+						         </span>
+		                         <span class="nav-link-text">Réclamations</span>
+					        </a><!--//nav-link-->
+					    </li><!--//nav-item-->
+						<li class="nav-item">
+					        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+					        <a  class="nav-link {% if request.resolver_match.url_name == 'conge' %}active{% endif %}" href="{%   url 'conge'    %}">
+						        <span class="nav-icon">
+									<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-sun" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+										<path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM0 8a8 8 0 1 0 16 0A8 8 0 0 0 0 8zm8-7a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm0 12a1 1 0 0 1-1-1v-1a1 1 0 0 1 2 0v1a1 1 0 0 1-1 1zM2 8a6 6 0 1 1 12 0A6 6 0 0 1 2 8zm0 4a1 1 0 0 1 1-1h1a1 1 0 0 1 0 2H3a1 1 0 0 1-1-1zm10 0a1 1 0 0 1-1 1h-1a1 1 0 0 1 0-2h1a1 1 0 0 1 1 1zM2 4a1 1 0 0 1 1-1h1a1 1 0 0 1 0 2H3a1 1 0 0 1-1-1zm10 0a1 1 0 0 1 1 1h-1a1 1 0 0 1 0-2h1a1 1 0 0 1 1 1z"/>
+									  </svg>
+									  
+						         </span>
+		                         <span class="nav-link-text">Congés</span>
+					        </a><!--//nav-link-->
+					    </li><!--//nav-item-->
+					</li><!--//nav-item-->
+					<li class="nav-item">
+						<!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+						<a  class="nav-link {% if request.resolver_match.url_name == 'code' %}active{% endif %}" href="{%   url 'code'    %}">
+							<span class="nav-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+								  
+								  
+							 </span>
+							 <span class="nav-link-text">Espace de développement</span>
+						</a><!--//nav-link-->
+					</li><!--//nav-item-->
+					<li class="nav-item">
+						<!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+						<a  class="nav-link {% if request.resolver_match.url_name == 'stagiaire' %}active{% endif %}" href="{%   url 'stagiaire'    %}">
+							<span class="nav-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+								  
+								  
+							 </span>
+							 <span class="nav-link-text">Stagiaires</span>
+						</a><!--//nav-link-->
+					</li><!--//nav-item-->
+					<li class=" {% if request.resolver_match.url_name == 'conge' %}active{% endif %} nav-item">
+						<!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+						<a  class="nav-link {% if request.resolver_match.url_name == 'forum' %}active{% endif %}" href="{%   url 'forum'    %}">
+							<span class="nav-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+									<path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+								  </svg>
+							  
+								  
+								  
+							 </span>
+							 <span class="nav-link-text ">Forum</span>
+						</a><!--//nav-link-->
+					</li><!--//nav-item-->
+					<li class="nav-item">
+						<!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+						<a  class="nav-link {% if request.resolver_match.url_name == 'souscription' %}active{% endif %}" href="{%   url 'souscription'    %}">
+							<span class="nav-icon">
+								<svg fill="#000000" height="24" width="24" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 214.27 214.27" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.8570800000000001"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M196.926,55.171c-0.11-5.785-0.215-11.25-0.215-16.537c0-4.142-3.357-7.5-7.5-7.5c-32.075,0-56.496-9.218-76.852-29.01 c-2.912-2.832-7.546-2.831-10.457,0c-20.354,19.792-44.771,29.01-76.844,29.01c-4.142,0-7.5,3.358-7.5,7.5 c0,5.288-0.104,10.755-0.215,16.541c-1.028,53.836-2.436,127.567,87.331,158.682c0.796,0.276,1.626,0.414,2.456,0.414 c0.83,0,1.661-0.138,2.456-0.414C199.36,182.741,197.954,109.008,196.926,55.171z M107.131,198.812 c-76.987-27.967-75.823-89.232-74.79-143.351c0.062-3.248,0.122-6.396,0.164-9.482c30.04-1.268,54.062-10.371,74.626-28.285 c20.566,17.914,44.592,27.018,74.634,28.285c0.042,3.085,0.102,6.231,0.164,9.477C182.961,109.577,184.124,170.844,107.131,198.812 z"></path> <path d="M132.958,81.082l-36.199,36.197l-15.447-15.447c-2.929-2.928-7.678-2.928-10.606,0c-2.929,2.93-2.929,7.678,0,10.607 l20.75,20.75c1.464,1.464,3.384,2.196,5.303,2.196c1.919,0,3.839-0.732,5.303-2.196l41.501-41.5 c2.93-2.929,2.93-7.678,0.001-10.606C140.636,78.154,135.887,78.153,132.958,81.082z"></path> </g> </g></svg>
+
+							  
+								  
+								  
+							 </span>
+							 <span class="nav-link-text">Souscription</span>
+						</a><!--//nav-link-->
+					</li><!--//nav-item-->
+					<li class="nav-item"> <!--//Bootstrap Icons: https://icons.getbootstrap.com/ --> <a class="nav-link" href="{%  url 'logout'   %}"> <span class="nav-icon"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> </span> <span class="nav-link-text">Déconnexion</span> </a><!--//nav-link--> </li><!--//nav-item-->
+					
+					<li class="nav-item balloons-container">
+						<div class="balloon balloon-1"></div>
+						<div class="balloon balloon-2"></div>
+						<div class="balloon balloon-3"></div>
+						
+					  </li>
+					  
+					
+					  <style>
+						/* Add this CSS code to your stylesheet */
+
+/* Styling for balloons */
+.balloons-container {
+  
+  list-style: none;
+  margin-top: 10px; /* Adjust this value to control the space between balloons and the menu items */
+  display: flex;
+  justify-content: center;
+}
+
+.balloon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  position: absolute;
+  animation: floatAnimation 3s infinite ease-in-out;
+}
+
+/* Different colors for balloons */
+.balloon-1 {
+	background-color: rgba(117,193,129,0.8);
+
+
+top: 680px;
+left:114px;
+}
+
+.balloon-2 {
+  background-color: rgba(117,193,129,0.8);
+  
+ 
+  top: 680px;
+  left:83px;
+}
+
+.balloon-3 {
+	background-color: rgba(117,193,129,0.8);
+
+ top:680px;
+ left:143px;
+}
+
+
+/* Animation for floating balloons */
+@keyframes floatAnimation {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+</style>
+					               
+					    
+						    
+				    </ul><!--//app-menu-->
+			    </nav><!--//app-nav-->
+			   
+		       
+	        </div><!--//sidepanel-inner-->
+	    </div><!--//app-sidepanel-->
+    </header><!--//app-header-->
+
+ {% block content  %}
+    {% endblock  %}
+	
+
+
+
+
+
+
+
+
+
+
+	<script src="{% static 'assets/plugins/popper.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+	
+
+	<!-- Prism JS -->
+	<script src="{% static 'assets/js/app.js' %}"></script>
+	<script src="{% static 'assets/js/prism.js' %}"></script>
+	
+
+</body>
+</html>

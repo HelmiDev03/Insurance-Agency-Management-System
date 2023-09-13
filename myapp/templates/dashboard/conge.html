@@ -1,0 +1,308 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Congées{% endblock %}
+
+{% block content %} 
+    
+    <div class="app-wrapper">
+        {% if user_type == "Employe"   and employee.etat == False        %}
+      
+        <div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% elif user_type == "Client"  and client.etat == False  %}
+<div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% else %}
+        
+        
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">                
+                <h1 class="app-page-title">Congés</h1>
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-8">
+                        <h3 class="section-title">Liste des congés</h3><br>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead >
+                                    <tr >
+                                        <th   style="background-color:rgba(117,193,129,0.8);">Raison</th>
+                                        <th   style="background-color:rgba(117,193,129,0.8);">Tuteur & role  </th>
+                                        <th   style="background-color:rgba(117,193,129,0.8);">date de départ</th>
+                                        <th   style="background-color:rgba(117,193,129,0.8);">date de fin</th>
+                                        <th   style="background-color:rgba(117,193,129,0.8);">Réponse</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                 
+                                    {% for conge in conges %}
+                                    <tr>
+                                    <td>{{ conge.raison }}</td>
+                                    <td>{{ conge.employe.nom }} {{ conge.employe.prenom }} | {{ conge.employe.role }}</td>
+                                    <td>{{conge.depart}}</td>
+                                    <td>{{conge.fin}}</td>
+                                    <td>
+                                   
+                                          {% if conge.reponse == "Pas encore de réponse" %}
+                                              {% if employee.role == "ResponsableRH" %}
+                                              <button class="openPopupBtn" data-popup-id="{{ conge.id }}">Répondre</button>
+
+                                              <!-- The popup (hidden by default) -->
+                                              <div id="popup{{ conge.id }}" class="popup">
+                                                  <!-- Your form goes here -->
+                                                  <form id="popupForm{{ conge.id }}" action="{% url 'repondreconge' conge.id %}" method="post" class="settings-form">
+
+
+                                                      {% csrf_token %}
+                                                 
+                                                      <br>
+                                                      <!-- Add form fields and submit button -->
+                                                      <button type="submit" class="btn btn-primary" name="action" value="accept">
+                                                        Accepter
+                                                    </button>
+                                                    <br>
+                                                    <button type="submit" class="btn btn-primary" name="action" value="reject">
+                                                        Rejeter
+                                                    </button>
+                                                  </form>
+                                                  {%if messages   %}
+                                                    {% for message in messages %}
+                                                        <div class="alert alert-{{ message.tags }}">
+                                                            {{ message }}
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endif %}
+                                                  <button class="btn-close closePopupBtn" data-popup-id="{{ conge.id }}"></button>
+                                              </div>
+                                                      <style>
+                                                        /* Style the popup container */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style the popup content */
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the close button */
+#closePopupBtn {
+  margin-top: 10px;
+}
+
+/* Center the form fields */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Style for the overlay */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1; /* Ensure the overlay appears above other elements */
+}
+
+/* Style to blur everything under the overlay */
+body.blur {
+  filter: blur(5px);
+  pointer-events: none; /* Disable pointer events on blurred elements */
+}
+
+/* Style for the popup container */
+.popup {
+  /* ... Your existing styles ... */
+  z-index: 2; /* Ensure the popup appears above the overlay */
+}
+
+</style>
+<!-- Add this script at the end of your HTML body or in a separate script file -->
+<script>
+    // Function to open the popup
+    function openPopup(congeId) {
+        const popup = document.getElementById('popup' + congeId);
+        const overlay = document.querySelector('.overlay');
+        popup.style.display = 'flex';
+        overlay.style.display = 'block';
+        document.body.classList.add('blur'); // Add the blur class to body
+    }
+
+    // Function to close the popup
+    function closePopup(congeId) {
+        const popup = document.getElementById('popup' + congeId);
+        const overlay = document.querySelector('.overlay');
+        popup.style.display = 'none';
+        overlay.style.display = 'none';
+        document.body.classList.remove('blur'); // Remove the blur class from body
+    }
+
+    // Attach event listener to the document for the buttons and popups
+    document.addEventListener('click', function(event) {
+        const target = event.target;
+
+        // If the clicked element has the class "openPopupBtn"
+        if (target.classList.contains('openPopupBtn')) {
+            const popupId = target.dataset.popupId;
+            openPopup(popupId);
+        }
+
+        // If the clicked element has the class "closePopupBtn"
+        if (target.classList.contains('closePopupBtn')) {
+            const popupId = target.dataset.popupId;
+            closePopup(popupId);
+        }
+    });
+
+    // Submit the form when the form is submitted
+    const popupForms = document.querySelectorAll('.settings-form');
+    popupForms.forEach(function(popupForm) {
+        popupForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Add your form submission logic here
+            // For example, you can use AJAX to submit the form data to your Django backend
+            // After successful submission, close the popup
+            const popupId = popupForm.dataset.popupId;
+            closePopup(popupId);
+        });
+    });
+</script>
+
+
+  
+<!-- Add this script at the end of your HTML body or in a separate script file -->
+
+  
+                                      
+                                      
+
+                                      {% endif %}
+                                      {% if employee.role != "ResponsableRH" %}
+                                      
+                                      {% if  conge.reponse == "oui" %}
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#319216" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                      
+                                         {% elif conge.reponse == "non" %}
+                                         <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-x-circle" fill="red" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm2.646 4.646a.5.5 0 0 1 0 .708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 .708-.708L8 7.293l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                                          </svg>
+                                         {% endif %}    
+                                         {{conge.reponse}}                               
+
+
+                                      {% endif %}
+                                      {% else %}
+                                      {% if  conge.reponse == "oui" %}
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#319216" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                      
+                                      
+                                         {% elif conge.reponse == "non" %}
+                                         <svg width="2em" height="1em" viewBox="0 0 16 16" class="bi bi-x-circle" fill="red" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm2.646 4.646a.5.5 0 0 1 0 .708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 .708-.708L8 7.293l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                                          </svg>
+                                         {% endif %}    
+                                         {{conge.reponse}}     
+                                 
+                                    {% endif %}
+                                    </td>
+                                    
+                                    </tr>
+                                    {% endfor %}
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                    {%  if user.client         %}       
+                    <div  style="transform:translateY(8px)" class="col-12 col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                              <h5 class="card-title">Avis Clients</h5>
+                              
+                              <p class="card-text">Espace réservé pour les employés</p>
+                            
+                            </div>
+                          </div>
+                        </div>
+                    
+                    {% elif employee.role != "ResponsableRH" %}
+                    <div class="col-12 col-md-4">
+                        <div class="app-card app-card-settings shadow-sm p-4">
+                            
+                            <div class="card " style="text-align:center;padding:10px" >
+								
+                                <form action="/demanderconge/" method="post" class="settings-form">
+                                    {% csrf_token %}
+                                 
+                                
+                                 
+                                    <div class="mb-3">
+                                        <label for="setting-input-5" class="form-label">Raison</label>
+                                        <input required name="raison" type="sujet" class="form-control" id="setting-input-5" value=" "required>
+                                    </div>
+									<div class="mb-3">
+                                        <label for="setting-input-4" class="form-label">Date de départ</label>
+                                        <input required name="depart"  type="date" class="form-control" id="setting-input-4" value="">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="setting-input-4" class="form-label">Date de fin</label>
+                                        <input required name="fin"  type="date" class="form-control" id="setting-input-4" value="">
+                                    </div><br>
+                                    {% if messages %}
+                                    {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }}">
+                                        {{ message }}
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+							
+                                    <button  style="background-color:rgba(117,193,129,0.8);"type="submit" class="btn btn-primary">
+                                      
+                                        demander un congé
+                                    </button>
+                                </form><br>
+                            
+
+
+                            </div><!--//app-card-body-->
+                            
+                        </div><!--//app-card-->
+                    </div>
+                    {% else %}
+                    <div  style="transform:translateY(8px)" class="col-12 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">Avis RH</h5>
+                          
+                          <p class="card-text">En tant q'un responsable Rh , vous n'etes pas autorisés qu'a consulter les congées et les répondre</p>
+                        
+                        </div>
+                      </div>
+                    </div>
+                 
+                    {% endif %}
+
+
+
+
+
+
+                    
+                 
+                    {% endif %} 
+                </div><!--//row-->
+{% endblock %}
+

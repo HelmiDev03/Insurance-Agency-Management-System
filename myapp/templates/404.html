@@ -1,0 +1,33 @@
+{% load static %}
+
+
+<head>
+  <title>404 Not Found</title>
+  <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@200;300;400;500&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+</head>
+<body>
+
+    
+    <div class="app-wrapper">
+        
+       <center>
+        <div class="app-content pt-3 p-md-8 p-lg-4">
+            <div style="margin-top:200px"class="container">
+                <div style="text-align:center"><img height="80px" src="{% static 'img/icon.png' %}" alt=""></div>
+                <h1>404 Error</h1>
+                <p class="lead">The page you requested was not found.</p>
+                <p>Go back to <a href="{% url 'home' %}">Home</a></p>
+            </div><!--//container-fluid-->
+        </div><!--//app-content-->
+        </center>
+
+                 
+              
+                </div><!--//row-->
+</body>

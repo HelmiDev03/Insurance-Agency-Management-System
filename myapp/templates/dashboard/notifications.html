@@ -1,0 +1,60 @@
+
+					
+{% extends "dashboard/base.html" %}
+{% block title %}
+Notifications
+{% endblock %}
+
+
+
+
+	
+{% block content %}
+<div style="margin-left:15%;"class="row notification-container">
+	{% if employe.etat or client.etat  %}
+
+	<h2 class="text-center"> Notifications</h2>
+	{% if notifdata %}
+          {% for notif in notifdata %}
+	<div class="card notification-card notification-invitation">
+	  <div class="card-body">
+		<table>
+		  <tr>
+			<td style="width:60%"><div class="card-title">{{notif.message}}</div></td>
+			<td style="width:60%"><div class="card-title">{{notif.created_at}} </div></td>
+			{% if notif.message !=  "votre membership a été bien accepté par l'administarteur"        %}
+			<td style="margin-right:45px;display:flex;transform:translateX(20%)" style="width:10%">
+				
+			  <!-- In your template -->
+			      
+					<a href="{% url notif.link %}" class="btn btn-primary">consulter</a>
+				
+
+			  <a href="{%  url 'supprimer_notification' notif.id     %}" class="btn btn-danger dismiss-notification">supprimer</a>
+			</td>
+			{% endif %}
+		  </tr>
+		</table>
+	  </div>
+	</div>
+	{% endfor %}
+	{% else %}
+	<div style="text-align:center"class="card notification-card notification-invitation">
+	  <div class="card-body">
+		<div class="card-title">Aucune notification pour le moment</div>
+
+	  </div>
+	  {% endif %}
+
+
+  {% else %}
+  <div style="margin-left:15px" >   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+  {% endif %}
+  </div>
+
+{% endblock %}
+						
+						
+						
+				
+                 

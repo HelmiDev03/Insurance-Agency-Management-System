@@ -1,0 +1,128 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Codes{% endblock %}
+{% block content %} 
+    
+    <div class="app-wrapper">
+        {% if user_type == "Employe"   and employee.etat == False        %}
+      
+        <div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% elif user_type == "Client"  and client.etat == False  %}
+<div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% else %}
+        
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">                
+                <h1 class="app-page-title">Codes</h1>
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-8">
+                        <h3 class="section-title">Liste des Codes</h3><br>
+                     
+                        {% for highlighted_code in highlighted_codes %}
+                        {% if highlighted_code %}
+                        <div class="app-card app-card-settings shadow-sm p-4">
+                            <div class="app-card-body">
+                                <div class="app-card-heading">
+                                    <div class="meta-info">
+                                        <div class="meta-user"> <b>{{ highlighted_code.1 }} {{ highlighted_code.2 }}</b></div>
+                                    </div><!--//meta-info--><br>
+                                </div><!--//app-card-heading-->
+                                <div class="app-card-body">
+                                    <!-- Add a copy button to copy the code -->
+                                
+                                    <h4 style="border-radius:35px" class="app-card-title"> {{ highlighted_code.3 }}</h4>
+                                    <pre class="code-block line-numbers">
+                                        {% if employee.role == "DevLogiciel" or employee.role == "ResponsableRH"  %}
+                                        <code style="color:white" class="language-{{ highlighted_code.4 }}">{{ highlighted_code.0|safe }}</code>
+                                        {% else %}
+                                        <code style="color:white; filter: blur(3px); " class="language-unknowen">{{ highlighted_code.0|safe }}</code>
+                                        <div style="font-weight:bold;color:red;transform: translate(-288px,-150px);" class="alert" role="alert">
+                                            Vous n'êtes pas autorisé à voir le code
+                                        </div>
+                                        {% endif %}
+                                    </pre><br>
+                                </div><!--//app-card-body-->
+                            </div><!--//app-card-body-->
+                        </div><!--//app-card--><br>
+                        {% endif %}
+                    {% endfor %}
+                
+                    
+                    
+                        
+                        
+                    </div>
+                    {%  if user.client         %}       
+                    <div  style="transform:translateY(8px)" class="col-12 col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                              <h5 class="card-title">Avis Clients</h5>
+                              
+                              <p class="card-text">Espace réservé pour les employés</p>
+                            
+                            </div>
+                          </div>
+                        </div>
+                    {% elif employee.role == "DevLogiciel" %}
+                    <div class="col-12 col-md-4">
+                        <div class="app-card app-card-settings shadow-sm p-4">
+                            
+                            <div class="card " style="text-align:center;padding:10px" >
+								
+                                <form action="/ajoutercode/" method="post" enctype="multipart/form-data" class="settings-form">
+                                    {% csrf_token %}
+                                 
+                                
+                                 
+                                    <div class="mb-3">
+                                        <label for="setting-input-5" class="form-label">titre</label>
+                                        <input required name="titre" type="sujet" class="form-control" id="setting-input-5" value=" "required>
+                                    </div>
+								
+                                    <div class="mb-3">
+                                        <label for="setting-input-4" class="form-label">fichier </label>
+                                        <input required name="file"  type="file" class="form-control" id="setting-input-4" value="">
+                                    </div>
+                                   
+                                    <br>
+                                    {% if messages %}
+                                    {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }}">
+                                        {{ message }}
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+							
+                                    <button  style="background-color:rgba(117,193,129,0.8);" type="submit" class="btn ">
+                                      
+                                        ajouter votre code
+                                    </button>
+                                 
+                                </form><br>
+                            
+
+
+                            </div><!--//app-card-body-->
+                            
+                        </div><!--//app-card-->
+                    </div>
+                    {% else %}
+                    <div  style="transform:translateY(8px)" class="col-12 col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">Avis Employés</h5>
+                          
+                          <p class="card-text">Seulement les developpeurs logiciels ont droit de publier leurs codes  </p>
+                        
+                        </div>
+                      </div>
+                    </div>
+                 
+                    {% endif %}
+
+
+
+
+                    {% endif %}
+                </div><!--//row-->
+{% endblock %}

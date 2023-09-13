@@ -1,0 +1,172 @@
+
+
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}
+{% if user_type == "Employe" %}
+Paramétres-{{employe.nom}} {{employe.prenom}}
+{% else %}
+Paramétres-{{client.nom}} {{client.prenom}} 
+{% endif %}
+{% endblock %}
+{% block content %} 
+    
+    <div class="app-wrapper">
+        <!-- verify is user is verifed from admin -->
+       
+        {% if user_type == "Employe"   and employe.etat == False        %}
+      
+        <div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% elif user_type == "Client" and client.etat == False  %}
+<div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% else %}
+        
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">                
+                <h1 class="app-page-title">Profile</h1>
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-4">
+                        <h3 class="section-title">Paramétres Géneraux</h3>
+                        
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="app-card app-card-settings shadow-sm p-4">
+                            
+                            <div class="app-card-body">
+								
+                                <form action="/profileupdate/" method="post" class="settings-form" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {% if user_type == "Employe" %}
+                                    <div class="mb-3">
+                                        <label for="setting-input-1" class="form-label">Nom</label>
+                                        <input name="nom" type="text" class="form-control" id="setting-input-1" value="{{ employe.nom }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="setting-input-2" class="form-label">Prénom</label>
+                                        <input name="prenom" type="text" class="form-control" id="setting-input-2" value="{{ employe.prenom }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="setting-input-3" class="form-label">Nom d'utilisateur</label>
+                                        <input name="username" type="text" class="form-control" id="setting-input-3" value="{{employe.user.username }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="setting-input-4" class="form-label">Adresse</label>
+                                        <!-- Corrected field name 'adresse' -->
+                                        <input type="text" class="form-control" name="adresse" id="setting-input-4" value="{{ employe.adresse }}" required>
+
+                                       
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="image">image de profile</label><br>
+                                    
+                                
+                                        {% if employe.is_image %}
+                                        <img style="border-radius:50%" height="90px" width="100px" class="" src="{{ employe.image.url }}" alt="Default Logo">
+                                        {%else%}
+                                        
+                                        <img height="90px" width="100px" class="" src="{% static 'assets/images/default.png' %}" >
+                                        {%endif%}
+                                        <div class="custom-file">
+                                            <input type="file" name="image" id="image" class="custom-file-input">
+                                            <label class="custom-file-label" for="image">modifier votre photo de profil</label>
+                                        </div>
+                                    </div><br>
+                                    <div class="mb-3">
+                                        <label for="setting-input-5" class="form-label">Email</label>
+                                        <input name="email" type="email" class="form-control" id="setting-input-5" value="{{ employe.email }}" required>
+                                    </div>
+                                  
+                                    
+									<div class="mb-3">
+                                        <label for="setting-input-4" class="form-label">Position</label>
+                                        <input disabled  type="text" class="form-control" id="setting-input-4" value="{{ employe.role }}">
+                                    </div>
+								
+									{% if role ==  "stagiare"  %}
+									<div class="mb-3">
+                                        <label for="setting-input-4" class="form-label">faculté</label>
+                                        <input name="faculte" type="text" class="form-control" id="setting-input-4" value="{{ stagiare.faculte }}" required>
+                                    </div>
+									<div class="mb-3">
+                                        <label for="setting-input-4" class="form-label">Specialité</label>
+                                        <input name="specialite" type="text" class="form-control" id="setting-input-4" value="{{ stagiare.specialite }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="setting-input-4" class="form-label">Encadrent</label>
+                                        <input disabled  type="text" class="form-control" id="setting-input-4" value="{{ stagiare.encadrant }}">
+                                    </div>
+								
+									{% elif role ==  "devlogiciel" %}
+									<div class="mb-3">
+										<label for="setting-input-4" class="form-label">Technologies utilisées</label>
+										{% for language in listoflanguages  %}
+										<input  disabled type="text" class="form-control col-md-2" id="setting-input-4" value="{{ language }}"><br>
+										{% endfor %}
+									</div>
+									{% endif %}
+
+
+                                    <!-- Add more form fields here -->
+                                    
+                            {% else %}
+                            <div class="mb-3">
+                                <label for="setting-input-1" class="form-label">Nom</label>
+                                <input name="nom" type="text" class="form-control" id="setting-input-1" value="{{ client.nom }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="setting-input-2" class="form-label">Prénom</label>
+                                <input name="prenom" type="text" class="form-control" id="setting-input-2" value="{{ client.prenom }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="setting-input-3" class="form-label">Nom d'utilisateur</label>
+                                <input name="username" type="text" class="form-control" id="setting-input-3" value="{{client.user.username }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="setting-input-4" class="form-label">Adresse</label>
+                                <!-- Corrected field name 'adresse' -->
+                                <input type="text" class="form-control" name="adresse" id="setting-input-4" value="{{ client.adresse }}" required>
+
+                               
+                            </div>
+                        
+                            <div class="form-group mb-3">
+                                <label for="image">image de profile</label><br>
+                            
+                        
+                                {% if client.is_image %}
+                                <img style="border-radius:50%" height="90px" width="100px" class="" src="{{ client.image.url }}" alt="Default Logo">
+                                {%else%}
+                                
+                                <img height="90px" width="100px" class="" src="{% static 'assets/images/default.png' %}" >
+                                {%endif%}
+                                <div class="custom-file">
+                                    <input type="file" name="image" id="image" class="custom-file-input">
+                                    <label class="custom-file-label" for="image">modifier votre photo de profil</label>
+                                </div>
+                            </div><br>
+                        
+                            <div class="mb-3">
+                                <label for="setting-input-5" class="form-label">Email</label>
+                                <input name="email" type="email" class="form-control" id="setting-input-5" value="{{ client.email }}" required>
+                            </div>
+                            {% endif %}
+                            <button type="submit" style="background-color:rgba(117,193,129,0.8);" class="btn " >modifier</button>
+                                </form><br>
+                                {%if messages %}
+                                {% for message in messages %}       
+                                <div class="alert alert-success" role="alert">
+                                    {{ message }}
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+
+
+                            </div><!--//app-card-body-->
+                            
+                        </div><!--//app-card-->
+                    </div>
+                    {%endif%}
+                </div><!--//row-->
+{% endblock %}
+

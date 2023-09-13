@@ -1,0 +1,56 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Stagiaires{% endblock %}
+{% block content %} 
+    
+    <div class="app-wrapper">
+        {% if user_type == "Employe"   and employee.etat == False        %}
+      
+        <div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% elif user_type == "Client"  and client.etat == False  %}
+<div class="container-xl">   <h1 class="app-page-title">Vous n'êtes pas autorisé à consulter cet espace pour le moment. Votre statut est en attente de vérification par l'administrateur.</h1></div>
+{% else %}
+        
+        
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">                
+                <h1 class="app-page-title">Stagiaires</h1>
+                <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-8">
+                        <h3 class="section-title">Liste des stagiaires</h3><br>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead >
+                                    <tr >
+                                        <th  style="background-color:rgba(117,193,129,0.8);">Nom et Prénom</th>
+                                        <th   style="background-color:rgba(117,193,129,0.8);">Faculté </th>
+                                        <th   style="background-color:rgba(117,193,129,0.8);">Specialité </th>
+                                        <th  style="background-color:rgba(117,193,129,0.8);">Encadrent </th>
+                                        <th   style="background-color:rgba(117,193,129,0.8);">Tache assignés</th>
+                                        <th   style="background-color:rgba(117,193,129,0.8);">Taches accomplies</th>
+                                        <th   style="background-color:rgba(117,193,129,0.8);">Nombre de points</th>
+                                   
+                                    </tr>
+                                </thead>  
+                                <tbody>
+                                 
+                                    {% for stagiaire in infolistofstagiaire %}
+                                    <tr>
+                                    <td>{{ stagiaire.0 }} {{ stagiaire.1 }}</td>
+                                    <td>{{ stagiaire.2}}</td>
+                                    <td>{{ stagiaire.3}}</td>
+                                    <td>{{stagiaire.4}}</td>
+                                    <td>{{stagiaire.5}}<br><a href="{%   url 'tache' stagiaire.8       %}">consulter et ajouter des taches</a></td>
+                                    <td>{{stagiaire.6}}</td>
+                                   <td> {{stagiaire.7}}</td>
+                                    
+                                    </tr>
+                                    {% endfor %}
+                                   
+                                </tbody>
+                            </table>
+
+
+
+                            {%endif%}
+                            {% endblock %}
