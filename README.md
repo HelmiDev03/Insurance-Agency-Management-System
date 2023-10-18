@@ -9,7 +9,9 @@ This repository contains the documentation and codebase for an insurance managem
 1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Technologies Used](#technologies-used)
-4. [Conclusion](#conclusion)
+4. [Prerequisites](#prerequisites)
+5. [Usage](#usage)
+6. [Conclusion](#conclusion)
 
 ## Introduction
 
@@ -39,6 +41,55 @@ The development of this project relied on a set of technologies and tools that c
 - **Django Framework**: Django was chosen for its robustness and security features, making it an excellent choice for building a secure and reliable web application. It provided a solid foundation for data management, security, and ease of development.
 
 - **ChartJs**: ChartJs was integrated into the project to create dynamic and informative data visualizations. This allows users to have a clear and interactive representation of essential insurance-related data.
+ ## Prerequisites
+
+- Python 3.x
+- pip
+ ## Usage
+ 1. **Create a Virtual Environment (Optional but Recommended)**
+
+    ```
+    python3 -m venv myenv
+    source myenv/bin/activate  # On Windows, use `myenv\Scripts\activate`
+    cd myenv
+
+2. **Clone the Repository**
+
+    ```
+    git clone https://github.com/HelmiDev03/InsuranceAgencyManagementSystem.git
+    cd InsuranceAgencyManagementSystem
+    ```
+
+ myenv/bin/activate  # On Windows, use `myenv\Scripts\activate`
+    ```
+
+3. **Install Required Packages**
+
+    ```
+    pip install -r requirements.txt
+    ```
+
+## Running the Project
+
+1. **Apply Migrations**
+
+    ```
+    python manage.py migrate
+    ```
+
+2. **Create Superuser (Optional)**
+
+    ```
+    python manage.py createsuperuser
+    ```
+
+3. **Run the Development Server**
+
+    ```
+    python manage.py runserver
+    ```
+
+    The project will be available at `http://127.0.0.1:8000/`.
 
 ## Conclusion
 
